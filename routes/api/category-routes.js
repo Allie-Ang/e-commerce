@@ -18,12 +18,12 @@ router.get("/:id", async (req, res) => {
       include: [{ model: Product }],
     });
     if (!categoryData) {
-      res.status(400).json({ message: "No product found in category" });
+      res.status(404).json({ message: "No product found in category" });
       return;
     }
     res.status(200).json(categoryData);
   } catch (err) {
-    res.status(500).json(err);
+    res.status(400).json(err);
   }
 });
 
@@ -40,7 +40,7 @@ router.put("/:id", async (req, res) => {
   try {
     const categoryData = await Category.update(req.body, {
       where: {
-        id: req.body.params.id,
+        id: req.params.id,
       },
     });
     if (!categoryData) {
