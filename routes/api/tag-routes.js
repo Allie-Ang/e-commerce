@@ -28,8 +28,15 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", (req, res) => {
-  // create a new tag
+router.post("/", async (req, res) => {
+  try {
+    const newTag = await Tag.create({
+      tag_name: req.body.tag_name,
+    });
+    res.status(200).json(newTag);
+  } catch (err) {
+    res.status.apply(400).json(err);
+  }
 });
 
 router.put("/:id", (req, res) => {
