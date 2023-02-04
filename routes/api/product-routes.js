@@ -74,20 +74,21 @@ router.post("/", (req, res) => {
 // update product
 router.put("/:id", (req, res) => {
   // update product data
+
   Product.update(req.body, {
     where: {
       id: req.params.id,
     },
   })
-    .then((product) => {
+    .then(async () => {
       if (req.body.tagIds && req.body.tagIds.length) {
-        const productTags = ProductTag.findAll({
+        const productTags = await ProductTag.findAll({
           where: { product_id: req.params.id },
         });
-        console.log("productTagIds", productTagIds);
+        console.log("product Tags", productTags); //ok
         const productTagIds = productTags.map(({ tag_id }) => tag_id);
-        console.log("productTagIds", productTagIds);
         // create filtered list of new tag_ids
+        console.log("productTagIds", productTagIds); //ok
         const newProductTags = req.body.tagIds
           .filter((tag_id) => !productTagIds.includes(tag_id))
           .map((tag_id) => {
@@ -96,20 +97,21 @@ router.put("/:id", (req, res) => {
               tag_id,
             };
           });
-        console.log("newProductTags", newProductTags);
+        console.log("newproducttags", newProductTags);
         // figure out which ones to remove
         const productTagsToRemove = productTags
           .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
           .map(({ id }) => id);
-        console.log("productTagsToRemove", productTagsToRemove);
+        console.log("tags to remove", productTagsToRemove);
         // run both actions
-        return Promise.all([
+        Promise.all([
           ProductTag.destroy({ where: { id: productTagsToRemove } }),
           ProductTag.bulkCreate(newProductTags),
         ]);
+        return res.json("Successfully updated with product tags");
       }
 
-      return res.json("success");
+      return res.json("successfully updated without product tags");
     })
     .catch((err) => {
       // console.log(err);
