@@ -83,10 +83,8 @@ router.put("/:id", (req, res) => {
         const productTags = await ProductTag.findAll({
           where: { product_id: req.params.id },
         });
-        console.log("product Tags", productTags); //ok
         const productTagIds = productTags.map(({ tag_id }) => tag_id);
         // create filtered list of new tag_ids
-        console.log("productTagIds", productTagIds); //ok
         const newProductTags = req.body.tagIds
           .filter((tag_id) => !productTagIds.includes(tag_id))
           .map((tag_id) => {
