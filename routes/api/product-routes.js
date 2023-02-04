@@ -28,12 +28,10 @@ router.get("/:id", async (req, res) => {
       ],
     });
     if (!productData) {
-      res.status
-        .apply(404)
-        .json({ message: "No products found with id parameters" });
+      res.status(404).json({ message: "No products found with id parameters" });
       return;
     }
-    res.status.apply(200).json(productData);
+    res.status(200).json(productData);
   } catch (err) {
     res.status(500).json(err);
   }

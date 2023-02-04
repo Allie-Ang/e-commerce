@@ -19,12 +19,13 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const tagData = await Tag.findByPk(req.params.id, {
-      include: [{ moedl: Product, through: ProductTag, as: "products" }],
+      include: [{ model: Product, through: ProductTag, as: "products" }],
     });
     if (!tagData) {
       res.status(404).json({ message: "No tags found with ID" });
       return;
     }
+    res.status(200).json(tagData);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -64,16 +65,15 @@ router.put("/:id", async (req, res) => {
 //* delete on tag by its `id` value
 router.delete("/:id", async (req, res) => {
   try {
-    const tagData = await Tag.destray({
+    const tagData = await Tag.destroy({
       where: {
         id: req.params.id,
       },
     });
     if (!tagData) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "No tag found with this ID",
       });
-      return;
     }
     res.status(200).json(tagData);
   } catch (err) {
